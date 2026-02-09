@@ -6,6 +6,7 @@ const repsSelect = document.getElementById('reps');
 const setsSelect = document.getElementById('sets');
 const timeSelect = document.getElementById('time');
 const completedBtn = document.getElementById('completed-btn');
+const resetBtn = document.getElementById('reset-btn');
 const historyEntries = document.getElementById('history-entries');
 
 // Store all entries
@@ -97,6 +98,34 @@ completedBtn.addEventListener('click', () => {
 
     // Export to Excel
     exportToExcel();
+});
+
+// Reset button - single tap removes last entry, double tap clears all
+let lastResetTap = 0;
+const doubleTapDelay = 300; // milliseconds
+
+resetBtn.addEventListener('click', () => {
+    const now = Date.now();
+
+    if (now - lastResetTap < doubleTapDelay) {
+        // Double tap - clear all entries
+        entries = [];
+        saveEntries();
+        historyEntries.innerHTML = '';
+        lastResetTap = 0;
+    } else {
+        // Single tap - remove last entry
+        if (entries.length > 0) {
+            entries.pop();
+            saveEntries();
+            // Remove last row from display
+            const lastRow = historyEntries.lastElementChild;
+            if (lastRow) {
+                lastRow.remove();
+            }
+        }
+        lastResetTap = now;
+    }
 });
 
 // Load entries on startup

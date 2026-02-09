@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Fitness Tracker</h1>
+
+    <div class="controls">
+        <div class="dropdown-group">
+            <label for="date">DATE</label>
+            <select id="date">
+                <option value="">Select...</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
+            </select>
+        </div>
+
+        <div class="dropdown-group">
+            <label for="exercise">EXERCISE</label>
+            <select id="exercise">
+                <option value="">Select...</option>
+                <option value="Ab Brace">Ab Brace</option>
+                <option value="Plank">Plank</option>
+                <option value="Hang">Hang</option>
+                <option value="Sit/Stand">Sit/Stand</option>
+                <option value="Back Extension">Back Extension</option>
+                <option value="Balance Board">Balance Board</option>
+                <option value="Static Lunge">Static Lunge</option>
+                <option value="Walking Lunge">Walking Lunge</option>
+                <option value="Rowing">Rowing</option>
+                <option value="Inverted Pullup">Inverted Pullup</option>
+                <option value="Jump Rope">Jump Rope</option>
+                <option value="Farmer Carry">Farmer Carry</option>
+            </select>
+        </div>
+
+        <div class="dropdown-group">
+            <label for="weight">WEIGHT</label>
+            <select id="weight">
+                <option value="">Select...</option>
+                <option value="0">0</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="25">25</option>
+                <option value="30">30</option>
+                <option value="35">35</option>
+                <option value="40">40</option>
+                <option value="45">45</option>
+                <option value="50">50</option>
+                <option value="55">55</option>
+                <option value="60">60</option>
+                <option value="65">65</option>
+                <option value="70">70</option>
+                <option value="75">75</option>
+                <option value="80">80</option>
+            </select>
+        </div>
+
+        <div class="dropdown-group">
+            <label for="reps">REPS</label>
+            <select id="reps">
+                <option value="">Select...</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+            </select>
+        </div>
+
+        <div class="dropdown-group">
+            <label for="sets">SETS</label>
+            <select id="sets">
+                <option value="">Select...</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </div>
+
+        <div class="dropdown-group">
+            <label for="time">TIME</label>
+            <select id="time">
+                <option value="">Select...</option>
+                <option value="0">0</option>
+                <option value="30 seconds">30 seconds</option>
+                <option value="1 minute">1 minute</option>
+                <option value="2 minutes">2 minutes</option>
+                <option value="3 minutes">3 minutes</option>
+                <option value="4 minutes">4 minutes</option>
+                <option value="5 minutes">5 minutes</option>
+            </select>
+        </div>
+
+        <div class="button-group">
+            <button id="completed-btn">COMPLETED</button>
+        </div>
+    </div>
+
+    <div class="history-container">
+        <div class="history-header">
+            <div class="header-item">DATE</div>
+            <div class="header-item">EXERCISE</div>
+            <div class="header-item">WEIGHT</div>
+            <div class="header-item">REPS</div>
+            <div class="header-item">SETS</div>
+            <div class="header-item">TIME</div>
+        </div>
+        <div id="history-entries"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

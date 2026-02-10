@@ -91,12 +91,7 @@ completedBtn.addEventListener('click', () => {
         notes: notesInput.value
     };
 
-    // Check if all fields are selected (weight and notes are optional)
-    if (!entry.month || !entry.day || !entry.exercise || !entry.reps || !entry.sets || !entry.time) {
-        alert('Please select all fields before marking as completed.');
-        return;
-    }
-
+    
     // Add to entries array
     entries.push(entry);
     saveEntries();

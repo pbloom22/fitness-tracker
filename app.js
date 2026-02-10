@@ -16,9 +16,9 @@ const newExerciseInput = document.getElementById('new-exercise-input');
 // Default exercises per category
 const defaultExercises = {
     Aerobics: ['Jump Rope', 'Rowing'],
-    Balance: ['Balance Board', 'Hang'],
-    Movements: ['Ab Brace', 'Back Extension', 'Plank', 'Sit/Stand', 'Static Lunge', 'Walking Lunge'],
-    Weights: ['Farmer Carry', 'Inverted Pullup']
+    Balance: ['Balance Board'],
+    Movements: ['Ab Brace', 'Back Extension', 'Hang', 'Inverted Pullup', 'Plank', 'Sit/Stand', 'Static Lunge', 'Walking Lunge'],
+    Weights: ['Farmer Carry']
 };
 
 // Store all entries

@@ -10,6 +10,7 @@ const notesInput = document.getElementById('notes');
 const completedBtn = document.getElementById('completed-btn');
 const resetBtn = document.getElementById('reset-btn');
 const historyEntries = document.getElementById('history-entries');
+const newExerciseInput = document.getElementById('new-exercise-input');
 
 // Store all entries
 let entries = [];
@@ -79,11 +80,28 @@ function exportToExcel() {
 
 // Handle completed button click
 completedBtn.addEventListener('click', () => {
+    // Handle new exercise addition
+    let exerciseValue = exerciseSelect.value;
+    if (exerciseValue === '__new__') {
+        const newName = newExerciseInput.value.trim();
+        if (!newName) return;
+        // Check if it already exists
+        const exists = Array.from(exerciseSelect.options).some(o => o.value === newName);
+        if (!exists) {
+            insertExerciseOption(newName);
+            saveCustomExercise(newName);
+        }
+        exerciseSelect.value = newName;
+        exerciseValue = newName;
+        newExerciseInput.value = '';
+        newExerciseInput.style.display = 'none';
+    }
+
     // Get current selections
     const entry = {
         month: monthSelect.value,
         day: daySelect.value,
-        exercise: exerciseSelect.value,
+        exercise: exerciseValue,
         weight: weightSelect.value,
         reps: repsSelect.value,
         sets: setsSelect.value,
@@ -91,7 +109,6 @@ completedBtn.addEventListener('click', () => {
         notes: notesInput.value
     };
 
-    
     // Add to entries array
     entries.push(entry);
     saveEntries();
@@ -134,5 +151,40 @@ resetBtn.addEventListener('click', () => {
     }
 });
 
-// Load entries on startup
+// Custom exercise management
+function loadCustomExercises() {
+    const saved = localStorage.getItem('customExercises');
+    if (saved) {
+        const customs = JSON.parse(saved);
+        customs.forEach(name => insertExerciseOption(name));
+    }
+}
+
+function insertExerciseOption(name) {
+    const newOption = document.createElement('option');
+    newOption.value = name;
+    newOption.textContent = name;
+    // Insert in alphabetical order before "New Exercise..."
+    const options = Array.from(exerciseSelect.options);
+    const newExerciseOpt = options.find(o => o.value === '__new__');
+    const insertBefore = options.find(o => o.value !== '__new__' && o.textContent.localeCompare(name) > 0);
+    exerciseSelect.insertBefore(newOption, insertBefore || newExerciseOpt);
+}
+
+function saveCustomExercise(name) {
+    const saved = localStorage.getItem('customExercises');
+    const customs = saved ? JSON.parse(saved) : [];
+    if (!customs.includes(name)) {
+        customs.push(name);
+        customs.sort((a, b) => a.localeCompare(b));
+        localStorage.setItem('customExercises', JSON.stringify(customs));
+    }
+}
+
+exerciseSelect.addEventListener('change', () => {
+    newExerciseInput.style.display = exerciseSelect.value === '__new__' ? '' : 'none';
+});
+
+// Load custom exercises and entries on startup
+loadCustomExercises();
 loadEntries();

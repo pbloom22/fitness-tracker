@@ -1,10 +1,12 @@
 // Fitness Tracker App
-const dateSelect = document.getElementById('date');
+const monthSelect = document.getElementById('month');
+const daySelect = document.getElementById('day');
 const exerciseSelect = document.getElementById('exercise');
 const weightSelect = document.getElementById('weight');
 const repsSelect = document.getElementById('reps');
 const setsSelect = document.getElementById('sets');
 const timeSelect = document.getElementById('time');
+const notesInput = document.getElementById('notes');
 const completedBtn = document.getElementById('completed-btn');
 const resetBtn = document.getElementById('reset-btn');
 const historyEntries = document.getElementById('history-entries');
@@ -32,12 +34,14 @@ function addEntryToDisplay(entry) {
     const row = document.createElement('div');
     row.className = 'history-row';
     row.innerHTML = `
-        <div class="history-cell">${entry.date}</div>
+        <div class="history-cell">${entry.month}</div>
+        <div class="history-cell">${entry.day}</div>
         <div class="history-cell">${entry.exercise}</div>
         <div class="history-cell">${entry.weight || '-'}</div>
         <div class="history-cell">${entry.reps}</div>
         <div class="history-cell">${entry.sets}</div>
         <div class="history-cell">${entry.time}</div>
+        <div class="history-cell">${entry.notes || '-'}</div>
     `;
     historyEntries.appendChild(row);
 }
@@ -49,20 +53,22 @@ function exportToExcel() {
 
     // Prepare data with headers
     const data = [
-        ['DATE', 'EXERCISE', 'WEIGHT', 'REPS', 'SETS', 'TIME'],
-        ...entries.map(e => [e.date, e.exercise, e.weight || '', e.reps, e.sets, e.time])
+        ['MONTH', 'DAY', 'EXERCISE', 'WEIGHT', 'REPS', 'SETS', 'TIME', 'NOTES'],
+        ...entries.map(e => [e.month, e.day, e.exercise, e.weight || '', e.reps, e.sets, e.time, e.notes || ''])
     ];
 
     const ws = XLSX.utils.aoa_to_sheet(data);
 
     // Set column widths
     ws['!cols'] = [
-        { wch: 12 },  // DATE
+        { wch: 8 },   // MONTH
+        { wch: 6 },   // DAY
         { wch: 18 },  // EXERCISE
         { wch: 10 },  // WEIGHT
         { wch: 8 },   // REPS
         { wch: 8 },   // SETS
-        { wch: 12 }   // TIME
+        { wch: 12 },  // TIME
+        { wch: 30 }   // NOTES
     ];
 
     XLSX.utils.book_append_sheet(wb, ws, 'Fitness Log');
@@ -75,16 +81,18 @@ function exportToExcel() {
 completedBtn.addEventListener('click', () => {
     // Get current selections
     const entry = {
-        date: dateSelect.value,
+        month: monthSelect.value,
+        day: daySelect.value,
         exercise: exerciseSelect.value,
         weight: weightSelect.value,
         reps: repsSelect.value,
         sets: setsSelect.value,
-        time: timeSelect.value
+        time: timeSelect.value,
+        notes: notesInput.value
     };
 
-    // Check if all fields are selected (weight is optional)
-    if (!entry.date || !entry.exercise || !entry.reps || !entry.sets || !entry.time) {
+    // Check if all fields are selected (weight and notes are optional)
+    if (!entry.month || !entry.day || !entry.exercise || !entry.reps || !entry.sets || !entry.time) {
         alert('Please select all fields before marking as completed.');
         return;
     }
@@ -95,6 +103,9 @@ completedBtn.addEventListener('click', () => {
 
     // Append to display
     addEntryToDisplay(entry);
+
+    // Clear notes after adding
+    notesInput.value = '';
 
     // Export to Excel
     exportToExcel();

@@ -76,6 +76,23 @@ h1 {
     padding: 10px;
 }
 
+#new-exercise-input {
+    padding: 12px 20px;
+    font-size: 1rem;
+    border: 2px solid #00ff88;
+    border-radius: 8px;
+    background-color: #16213e;
+    color: white;
+    min-width: 150px;
+    margin-top: 5px;
+}
+
+#new-exercise-input:focus {
+    outline: none;
+    border-color: #00ff88;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+}
+
 .notes-group {
     display: flex;
     flex-direction: column;

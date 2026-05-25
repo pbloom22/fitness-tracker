@@ -1,4 +1,6 @@
 // Fitness Tracker App
+const nameSelect = document.getElementById('name');
+const newNameInput = document.getElementById('new-name-input');
 const monthSelect = document.getElementById('month');
 const daySelect = document.getElementById('day');
 const categorySelect = document.getElementById('category');
@@ -12,13 +14,17 @@ const completedBtn = document.getElementById('completed-btn');
 const resetBtn = document.getElementById('reset-btn');
 const historyEntries = document.getElementById('history-entries');
 const newExerciseInput = document.getElementById('new-exercise-input');
+const timerContainer = document.getElementById('timer-container');
+const timerDisplay = document.getElementById('timer-display');
+const timerToggleBtn = document.getElementById('timer-toggle-btn');
+const timerResetBtn = document.getElementById('timer-reset-btn');
 
 // Default exercises per category
 const defaultExercises = {
     Aerobics: ['Jump Rope', 'Rowing'],
     Balance: ['Balance Board'],
     Movements: ['Ab Brace', 'Back Extension', 'Hang', 'Inverted Pullup', 'Plank', 'Sit/Stand', 'Static Lunge', 'Walking Lunge'],
-    Weights: ['Farmer Carry']
+    Weights: ['Farmer Carry', 'Hack Squat']
 };
 
 // Store all entries
@@ -72,14 +78,95 @@ function populateExercises(category) {
     newExerciseInput.value = '';
 }
 
+// Name dropdown: load custom names from localStorage
+function loadCustomNames() {
+    const saved = localStorage.getItem('customNames');
+    return saved ? JSON.parse(saved) : [];
+}
+
+function saveCustomNames(names) {
+    localStorage.setItem('customNames', JSON.stringify(names));
+}
+
+function populateNames() {
+    const customs = loadCustomNames();
+    nameSelect.innerHTML = '<option value="Peter">Peter</option>';
+    customs.forEach(name => {
+        if (name !== 'Peter') {
+            const opt = document.createElement('option');
+            opt.value = name;
+            opt.textContent = name;
+            nameSelect.appendChild(opt);
+        }
+    });
+    const newOpt = document.createElement('option');
+    newOpt.value = '__new__';
+    newOpt.textContent = 'New Name...';
+    nameSelect.appendChild(newOpt);
+    nameSelect.value = 'Peter';
+}
+
+nameSelect.addEventListener('change', () => {
+    newNameInput.style.display = nameSelect.value === '__new__' ? '' : 'none';
+    if (nameSelect.value !== '__new__') newNameInput.value = '';
+});
+
+// Timer state
+let timerInterval = null;
+let timerSeconds = 0;
+let timerRunning = false;
+
+function formatTime(s) {
+    return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+}
+
+function resetTimer() {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    timerSeconds = 0;
+    timerDisplay.textContent = '00:00';
+    timerToggleBtn.textContent = 'START';
+    timerToggleBtn.classList.remove('timer-running');
+}
+
+timerToggleBtn.addEventListener('click', () => {
+    if (timerRunning) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        timerToggleBtn.textContent = 'START';
+        timerToggleBtn.classList.remove('timer-running');
+    } else {
+        timerInterval = setInterval(() => {
+            timerSeconds++;
+            timerDisplay.textContent = formatTime(timerSeconds);
+        }, 1000);
+        timerRunning = true;
+        timerToggleBtn.textContent = 'STOP';
+        timerToggleBtn.classList.add('timer-running');
+    }
+});
+
+timerResetBtn.addEventListener('click', resetTimer);
+
+function updateTimerVisibility() {
+    const show = categorySelect.value === 'Aerobics' && exerciseSelect.value && exerciseSelect.value !== '__new__';
+    timerContainer.style.display = show ? '' : 'none';
+    if (!show) resetTimer();
+}
+
 // Category change handler
 categorySelect.addEventListener('change', () => {
     populateExercises(categorySelect.value);
+    updateTimerVisibility();
 });
 
-// Exercise change handler - show/hide new exercise input
+// Exercise change handler - show/hide new exercise input and timer
 exerciseSelect.addEventListener('change', () => {
     newExerciseInput.style.display = exerciseSelect.value === '__new__' ? '' : 'none';
+    if (categorySelect.value === 'Aerobics' && exerciseSelect.value !== '__new__') {
+        resetTimer();
+    }
+    updateTimerVisibility();
 });
 
 // Load existing entries from localStorage
@@ -101,6 +188,7 @@ function addEntryToDisplay(entry) {
     const row = document.createElement('div');
     row.className = 'history-row';
     row.innerHTML = `
+        <div class="history-cell">${entry.name || '-'}</div>
         <div class="history-cell">${entry.month}</div>
         <div class="history-cell">${entry.day}</div>
         <div class="history-cell">${entry.exercise}</div>
@@ -117,8 +205,8 @@ function addEntryToDisplay(entry) {
 function exportToExcel() {
     const wb = XLSX.utils.book_new();
     const data = [
-        ['MONTH', 'DAY', 'EXERCISE', 'WEIGHT', 'REPS', 'SETS', 'TIME', 'NOTES'],
-        ...entries.map(e => [e.month, e.day, e.exercise, e.weight || '', e.reps, e.sets, e.time, e.notes || ''])
+        ['NAME', 'MONTH', 'DAY', 'EXERCISE', 'WEIGHT', 'REPS', 'SETS', 'TIME', 'NOTES'],
+        ...entries.map(e => [e.name || '', e.month, e.day, e.exercise, e.weight || '', e.reps, e.sets, e.time, e.notes || ''])
     ];
     const ws = XLSX.utils.aoa_to_sheet(data);
     ws['!cols'] = [
@@ -137,6 +225,20 @@ function exportToExcel() {
 
 // Handle completed button click
 completedBtn.addEventListener('click', () => {
+    let nameValue = nameSelect.value;
+    if (nameValue === '__new__') {
+        const newName = newNameInput.value.trim();
+        if (!newName) return;
+        const customs = loadCustomNames();
+        if (!customs.includes(newName)) {
+            customs.push(newName);
+            saveCustomNames(customs);
+        }
+        populateNames();
+        nameSelect.value = newName;
+        nameValue = newName;
+    }
+
     let exerciseValue = exerciseSelect.value;
     const category = categorySelect.value;
 
@@ -164,6 +266,7 @@ completedBtn.addEventListener('click', () => {
     }
 
     const entry = {
+        name: nameValue,
         month: monthSelect.value,
         day: daySelect.value,
         exercise: exerciseValue,
@@ -206,6 +309,8 @@ resetBtn.addEventListener('click', () => {
     }
 });
 
-// Initialize: populate exercises for default category and load entries
+// Initialize
+populateNames();
 populateExercises(categorySelect.value);
+updateTimerVisibility();
 loadEntries();

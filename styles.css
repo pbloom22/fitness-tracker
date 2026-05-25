@@ -172,6 +172,81 @@ h1 {
     transform: scale(0.95);
 }
 
+.timer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    margin-top: 30px;
+    padding: 24px 40px;
+    border: 2px solid #00ff88;
+    border-radius: 12px;
+    background-color: #16213e;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.15);
+}
+
+.timer-label {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #00ff88;
+    letter-spacing: 2px;
+}
+
+.timer-display {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #00ff88;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 4px;
+}
+
+.timer-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.timer-buttons button {
+    padding: 10px 28px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+#timer-toggle-btn {
+    background-color: #00cc6a;
+    color: white;
+}
+
+#timer-toggle-btn:hover {
+    background-color: #00ff88;
+}
+
+#timer-toggle-btn.timer-running {
+    background-color: #e94560;
+}
+
+#timer-toggle-btn.timer-running:hover {
+    background-color: #ff6b6b;
+}
+
+#timer-reset-btn {
+    background-color: #333;
+    color: #ccc;
+    border: 1px solid #555;
+}
+
+#timer-reset-btn:hover {
+    background-color: #444;
+    color: white;
+}
+
+.timer-buttons button:active {
+    transform: scale(0.95);
+}
+
 .history-container {
     margin-top: 40px;
     width: 100%;

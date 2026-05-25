@@ -11,6 +11,15 @@
 
     <div class="controls">
         <div class="dropdown-group">
+            <label for="name">NAME</label>
+            <select id="name">
+                <option value="Peter">Peter</option>
+                <option value="__new__">New Name...</option>
+            </select>
+            <input type="text" id="new-name-input" placeholder="Enter name..." style="display:none;">
+        </div>
+
+        <div class="dropdown-group">
             <label for="month">MONTH</label>
             <select id="month">
                 <option value="Jan">Jan</option>
@@ -165,8 +174,18 @@
         </div>
     </div>
 
+    <div id="timer-container" class="timer-container" style="display:none;">
+        <div class="timer-label">AEROBIC TIMER</div>
+        <div class="timer-display" id="timer-display">00:00</div>
+        <div class="timer-buttons">
+            <button id="timer-toggle-btn">START</button>
+            <button id="timer-reset-btn">RESET</button>
+        </div>
+    </div>
+
     <div class="history-container">
         <div class="history-header">
+            <div class="header-item">NAME</div>
             <div class="header-item">MONTH</div>
             <div class="header-item">DAY</div>
             <div class="header-item">EXERCISE</div>

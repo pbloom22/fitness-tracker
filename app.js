@@ -19,8 +19,8 @@ const timerDisplay = document.getElementById('timer-display');
 const timerToggleBtn = document.getElementById('timer-toggle-btn');
 const timerResetBtn = document.getElementById('timer-reset-btn');
 
-// Default exercises per category
-const defaultExercises = {
+// Default exercises per category (fallback if server is unreachable)
+let defaultExercises = {
     Aerobics: ['Jump Rope', 'Rowing'],
     Balance: ['Balance Board'],
     Movements: ['Ab Brace', 'Back Extension', 'Hang', 'Inverted Pullup', 'Plank', 'Sit/Stand', 'Static Lunge', 'Walking Lunge'],
@@ -246,7 +246,7 @@ completedBtn.addEventListener('click', () => {
         const newName = newExerciseInput.value.trim();
         if (!newName) return;
 
-        // Save custom exercise to this category
+        // Save custom exercise to localStorage (immediate, for this session)
         const customExercises = loadCustomExercises();
         if (!customExercises[category]) {
             customExercises[category] = [];
@@ -256,6 +256,13 @@ completedBtn.addEventListener('click', () => {
             customExercises[category].sort((a, b) => a.localeCompare(b));
             saveCustomExercises(customExercises);
         }
+
+        // Permanently commit to GitHub so it redeploys as a default
+        fetch('/api/add-exercise', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ category, exercise: newName })
+        }).catch(() => {}); // fire-and-forget; localStorage covers the session gap
 
         // Repopulate and select the new exercise
         populateExercises(category);
@@ -314,3 +321,12 @@ populateNames();
 populateExercises(categorySelect.value);
 updateTimerVisibility();
 loadEntries();
+
+// Fetch latest exercises from server, then repopulate (overrides hardcoded defaults)
+fetch('/exercises.json')
+    .then(r => r.json())
+    .then(data => {
+        defaultExercises = data;
+        populateExercises(categorySelect.value);
+    })
+    .catch(() => {}); // silently fall back to hardcoded defaults if unreachable

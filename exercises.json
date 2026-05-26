@@ -1,0 +1,6 @@
+{
+  "Aerobics": ["Jump Rope", "Rowing"],
+  "Balance": ["Balance Board"],
+  "Movements": ["Ab Brace", "Back Extension", "Hang", "Inverted Pullup", "Plank", "Sit/Stand", "Static Lunge", "Walking Lunge"],
+  "Weights": ["Farmer Carry", "Hack Squat"]
+}
